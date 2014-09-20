@@ -23,9 +23,9 @@ MainWindow::createTrayIcon()
     mTrayIcon = new QSystemTrayIcon(this);
 
     QAction *onQuit = new QAction( "Exit", mTrayIcon );
-    connect( onQuit, SIGNAL(triggered()), this, SLOT(onTrayExit()) );
+    connect( onQuit, SIGNAL(triggered()), this, SLOT(onTrayQuit()) );
 
-    QAction *onShow = new QAction( "Do something", mTrayIcon );
+    QAction *onShow = new QAction( "Show", mTrayIcon );
     connect( onShow, SIGNAL(triggered()), this, SLOT(onTrayShow()) );
 
     QMenu *trayMenu = new QMenu;
@@ -46,5 +46,5 @@ MainWindow::onTrayQuit()
 void
 MainWindow::onTrayShow()
 {
-
+    showFullScreen();
 }

@@ -8,7 +8,10 @@ int main(int argc, char *argv[])
 
     //Hide the title bar and show fullscreen
     w.setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
-    w.showFullScreen();
+    //w.showFullScreen();
+    //w.show();
+
+
 
     return a.exec();
 }
