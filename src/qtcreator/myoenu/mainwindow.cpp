@@ -9,6 +9,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     createTrayIcon();
 
+    //Set translucent so background is painted behind
+    setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(Qt::WA_NoSystemBackground, true);
+
     ui->setupUi(this);
 }
 
