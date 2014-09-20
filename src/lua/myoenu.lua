@@ -3,13 +3,12 @@ scriptId = 'com.misahn.Test'
 currentPose = nil
 listenForSwipeDownIn = false
 listenForSwipeUpOut = false
+poseReset = false
 
 totalDeltaY = 0
 lastPitch = 0
 minSwipeSpd = 0.07
 swipeDistance = 0.15
-lastSwipeTime = 0
-betweenSwipeDurationMS = 1500
 
 function onSwipeDown()
 	myo.debug("SWIPE DOWN")
@@ -34,8 +33,6 @@ function onPoseEdge(pose, edge)
 			myo.debug("Swipe up started")
 			listenForSwipeUpOut = true
 		end
-	else
-		currentPose = nil
 	end
 end
 
@@ -52,13 +49,13 @@ function onPeriodic()
 		-- Check if we've achieved the total downwards movement to count as a swipe
 		-- We don't want multiple swipe events to trigger in a short period of time
 		-- Note that to trigger this, we need a thumbToPinkyEvent to have happened beforehand
-		local curTime = myo.getTimeMilliseconds()
 		if listenForSwipeDownIn and math.abs(totalDeltaY) > swipeDistance then
 			myo.vibrate("short")
 			onSwipeDown()
 			listenForSwipeUpOut = false
 			listenForSwipeDownIn = false
 			totalDeltaY = 0
+			poseReset = true
 		end
 	elseif math.abs(deltaY) > minSwipeSpd then
 		totalDeltaY = totalDeltaY - deltaY
@@ -66,17 +63,20 @@ function onPeriodic()
 		-- Check if we've achieved the total downwards movement to count as a swipe
 		-- We don't want multiple swipe events to trigger in a short period of time
 		-- Note that to trigger this, we need a thumbToPinkyEvent to have happened beforehand
-		local curTime = myo.getTimeMilliseconds()
 		if listenForSwipeUpOut and math.abs(totalDeltaY) > swipeDistance then
 			myo.vibrate("short")
 			onSwipeUp()
 			listenForSwipeUpOut = false
 			listenForSwipeDownIn = false
 			totalDeltaY = 0
+			poseReset = true
 		end
 	else
 		-- Reset our distance counter
 		totalDeltaY = 0
+		if poseReset then
+			currentPose = nil
+		end
 	end
 end
 
