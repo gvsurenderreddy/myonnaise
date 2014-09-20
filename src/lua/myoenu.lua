@@ -1,13 +1,12 @@
 scriptId = 'com.misahn.Test'
 
-currentPose = nil
 listenForSwipeDownIn = false
 listenForSwipeUpOut = false
-poseReset = false
+reset = false
 
 totalDeltaY = 0
 lastPitch = 0
-minSwipeSpd = 0.07
+minSwipeSpd = 0.05
 swipeDistance = 0.15
 
 function onSwipeDown()
@@ -22,7 +21,6 @@ end
 
 function onPoseEdge(pose, edge)
 	if edge == "on" then
-		currentPose = pose
 		if pose == "fist" then
 			myo.debug("Myo data: Roll " .. myo.getRoll() .. " Yaw " .. myo.getYaw() .. " Pitch " .. myo.getPitch())
 			myo.vibrate("short")
@@ -52,10 +50,8 @@ function onPeriodic()
 		if listenForSwipeDownIn and math.abs(totalDeltaY) > swipeDistance then
 			myo.vibrate("short")
 			onSwipeDown()
-			listenForSwipeUpOut = false
-			listenForSwipeDownIn = false
 			totalDeltaY = 0
-			poseReset = true
+			reset = true
 		end
 	elseif math.abs(deltaY) > minSwipeSpd then
 		totalDeltaY = totalDeltaY - deltaY
@@ -66,16 +62,16 @@ function onPeriodic()
 		if listenForSwipeUpOut and math.abs(totalDeltaY) > swipeDistance then
 			myo.vibrate("short")
 			onSwipeUp()
-			listenForSwipeUpOut = false
-			listenForSwipeDownIn = false
 			totalDeltaY = 0
-			poseReset = true
+			reset = true
 		end
 	else
 		-- Reset our distance counter
 		totalDeltaY = 0
-		if poseReset then
-			currentPose = nil
+		if reset then
+			reset=false
+			listenForSwipeUpOut = false
+			listenForSwipeDownIn = false
 		end
 	end
 end
