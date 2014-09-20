@@ -1,19 +1,24 @@
 scriptId = 'com.misahn.Test'
 
 currentPose = nil
-listenForSwipe = false
+listenForSwipeDownIn = false
+listenForSwipeUpOut = false
 
 totalDeltaY = 0
 lastPitch = 0
 minSwipeSpd = 0.07
-swipeDistance = 0.2
+swipeDistance = 0.15
 lastSwipeTime = 0
 betweenSwipeDurationMS = 1500
 
 function onSwipeDown()
-	myo.debug("SWIPE")
-	myo.keyboard("down_arrow", "down")
-	myo.keyboard("down_arrow", "up")
+	myo.debug("SWIPE DOWN")
+	myo.keyboard("down_arrow", "press")
+end
+
+function onSwipeUp()
+	myo.debug("SWIPE UP")
+	myo.keyboard("up_arrow", "press")
 end
 
 function onPoseEdge(pose, edge)
@@ -23,8 +28,11 @@ function onPoseEdge(pose, edge)
 			myo.debug("Myo data: Roll " .. myo.getRoll() .. " Yaw " .. myo.getYaw() .. " Pitch " .. myo.getPitch())
 			myo.vibrate("short")
 		elseif pose == "waveOut" then
-			myo.debug("Swipe started")
-			listenForSwipe = true
+			myo.debug("Swipe down started")
+			listenForSwipeDownIn = true
+		elseif pose == "waveIn" then
+			myo.debug("Swipe up started")
+			listenForSwipeUpOut = true
 		end
 	else
 		currentPose = nil
@@ -38,19 +46,33 @@ function onPeriodic()
 	lastPitch = currentPitch
 
 	-- We want the difference in pitch to be downwards, and be fast enough
-	if deltaY < 0 and math.abs(deltaY) > minSwipeSpd then
+	if deltaY < 0  and math.abs(deltaY) > minSwipeSpd then
 		totalDeltaY = totalDeltaY - deltaY
 		myo.debug("swiping down")
 		-- Check if we've achieved the total downwards movement to count as a swipe
 		-- We don't want multiple swipe events to trigger in a short period of time
 		-- Note that to trigger this, we need a thumbToPinkyEvent to have happened beforehand
 		local curTime = myo.getTimeMilliseconds()
-		if listenForSwipe and math.abs(totalDeltaY) > swipeDistance and (curTime - lastSwipeTime) > betweenSwipeDurationMS then
+		if listenForSwipeDownIn and math.abs(totalDeltaY) > swipeDistance then
 			myo.vibrate("short")
 			onSwipeDown()
+			listenForSwipeUpOut = false
+			listenForSwipeDownIn = false
 			totalDeltaY = 0
-			lastSwipeTime = curTime
-			listenForSwipe = false
+		end
+	elseif math.abs(deltaY) > minSwipeSpd then
+		totalDeltaY = totalDeltaY - deltaY
+		myo.debug("swiping up")
+		-- Check if we've achieved the total downwards movement to count as a swipe
+		-- We don't want multiple swipe events to trigger in a short period of time
+		-- Note that to trigger this, we need a thumbToPinkyEvent to have happened beforehand
+		local curTime = myo.getTimeMilliseconds()
+		if listenForSwipeUpOut and math.abs(totalDeltaY) > swipeDistance then
+			myo.vibrate("short")
+			onSwipeUp()
+			listenForSwipeUpOut = false
+			listenForSwipeDownIn = false
+			totalDeltaY = 0
 		end
 	else
 		-- Reset our distance counter
