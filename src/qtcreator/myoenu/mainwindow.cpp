@@ -50,7 +50,7 @@ MainWindow::createTrayIcon()
 void
 MainWindow::onTrayQuit()
 {
-
+    QApplication::quit();
 }
 
 void
