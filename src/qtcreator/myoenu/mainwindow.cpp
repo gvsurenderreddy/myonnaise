@@ -14,6 +14,12 @@ MainWindow::MainWindow(QWidget *parent) :
     setAttribute(Qt::WA_NoSystemBackground, true);
 
     ui->setupUi(this);
+
+    //Start as a 1x1 window so we can still count as visible
+    setFixedSize(1,1);
+
+    //Set focus so we can get key events
+    setFocusPolicy(Qt::StrongFocus);
 }
 
 MainWindow::~MainWindow()
@@ -51,4 +57,13 @@ void
 MainWindow::onTrayShow()
 {
     showFullScreen();
+}
+
+void
+MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Down) {
+        printf("SHOW");
+        showFullScreen();
+    }
 }

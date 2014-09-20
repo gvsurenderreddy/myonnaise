@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QSystemTrayIcon>
+#include <QKeyEvent>
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +18,9 @@ public:
     ~MainWindow();
 
     void createTrayIcon();
+
+protected:
+    void keyPressEvent(QKeyEvent* event);
 
 private:
     Ui::MainWindow *ui;

@@ -12,8 +12,8 @@ betweenSwipeDurationMS = 1500
 
 function onSwipeDown()
 	myo.debug("SWIPE")
-	myo.keyboard("a", "down")
-	myo.keyboard("a", "up")
+	myo.keyboard("down_arrow", "down")
+	myo.keyboard("down_arrow", "up")
 end
 
 function onPoseEdge(pose, edge)
