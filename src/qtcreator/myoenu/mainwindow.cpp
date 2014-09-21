@@ -5,6 +5,13 @@
 #include <QDebug>
 #include <Windows.h>
 
+/*
+ * 97: o
+ * 37: left arrow
+ */
+#define HOTKEY_SHOWAPP 91
+#define HOTKEY_LEFT 37
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -53,6 +60,23 @@ MainWindow::createTrayIcon()
 }
 
 void
+MainWindow::showOverlay()
+{
+    //Show fullscreen
+    showFullScreen();
+    //Bring window to top
+    // Windows does not allow windows to bring themselves to the front, so this hack solves this somewhat
+    ::SetWindowPos((HWND)effectiveWinId(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+    ::SetWindowPos((HWND)effectiveWinId(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+    // End of hack
+
+    //Do rest of methods to try bring window to the front
+    raise();
+    show();
+    activateWindow();
+}
+
+void
 MainWindow::onTrayQuit()
 {
     QApplication::quit();
@@ -61,7 +85,7 @@ MainWindow::onTrayQuit()
 void
 MainWindow::onTrayShow()
 {
-    showFullScreen();
+    showOverlay();
 }
 
 /**
@@ -75,19 +99,16 @@ void
 MainWindow::onRecieveKeyInput(int keyCode, bool pressedDown)
 {
     qDebug() << "Recieved key event " << keyCode << "\n";
-    if (pressedDown && keyCode == 66)
+    if (pressedDown)
     {
-        //Show fullscreen
-        showFullScreen();
-        //Bring window to top
-        // Windows does not allow windows to bring themselves to the front, so this hack solves this somewhat
-        ::SetWindowPos((HWND)effectiveWinId(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
-        ::SetWindowPos((HWND)effectiveWinId(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
-        // End of hack
+        if (keyCode == HOTKEY_SHOWAPP)
+        {
+            showOverlay();
+        }
+        else if (keyCode == HOTKEY_LEFT)
+        {
 
-        //Do rest of methods to try bring window to the front
-        raise();
-        show();
-        activateWindow();
+        }
+
     }
 }

@@ -19,6 +19,8 @@ public:
 
     void createTrayIcon();
 
+    void showOverlay();
+
 private:
     Ui::MainWindow *ui;
 
