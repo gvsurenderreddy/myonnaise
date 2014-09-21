@@ -4,6 +4,12 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QKeyEvent>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QGraphicsItem>
+#include <QGraphicsTextItem>
+#include <vector>
+
 
 namespace Ui {
 class MainWindow;
@@ -22,9 +28,21 @@ public:
     void showOverlay();
 
 private:
-    Ui::MainWindow *ui;
 
+    QGraphicsTextItem* createTextAtPos(int x, int y, const QString &text);
+
+    void doInitialLayout();
+
+    void onMovementUp();
+
+    void onMovementDown();
+
+
+    Ui::MainWindow *ui;
     QSystemTrayIcon *mTrayIcon;
+    QGraphicsScene *m_scene;
+    std::vector<QGraphicsTextItem *> m_textItems;
+    QGraphicsRectItem *m_selectionRect;
 
 public slots:
     void onTrayQuit();
