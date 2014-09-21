@@ -78,6 +78,14 @@ MainWindow::createTrayIcon()
 void
 MainWindow::showOverlay()
 {
+    if (m_beingShown == true)
+    {
+        qDebug("Already being shown\n");
+        return;
+    }
+
+    m_beingShown = true;
+
     //Show fullscreen
     showFullScreen();
     //Bring window to top
@@ -106,6 +114,14 @@ MainWindow::showOverlay()
 void
 MainWindow::hideOverlay()
 {
+    if (m_beingShown == false)
+    {
+        qDebug("Not being shown\n");
+        return;
+    }
+
+    m_beingShown = false;
+
     //Do fade out animation
     QPropertyAnimation *animation = new QPropertyAnimation(this, "windowOpacity", this);
     animation->setDuration(500);
@@ -114,6 +130,16 @@ MainWindow::hideOverlay()
     //Delete the allocated animation once the animation completes
     connect(animation, SIGNAL(finished()), animation, SLOT(hide()));
     connect(animation, SIGNAL(finished()), animation, SLOT(deleteLater()));
+    QObject::connect(animation, &QPropertyAnimation::finished, [=](){
+        //Clear the text elements and deallocate them
+        for (auto it = m_textItems.begin(); it != m_textItems.end(); it++)
+        {
+            QGraphicsTextItem* text = *it;
+            m_scene->removeItem(text);
+            delete text;
+        }
+        m_textItems.clear();
+    });
     animation->start();
 }
 

@@ -39,7 +39,7 @@ private:
 
     void onMovementDown();
 
-
+    bool m_beingShown;
     Ui::MainWindow *ui;
     QSystemTrayIcon *mTrayIcon;
     QGraphicsScene *m_scene;
