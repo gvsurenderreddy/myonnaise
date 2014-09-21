@@ -2,12 +2,17 @@
 #include "ui_mainwindow.h"
 #include <QMenu>
 #include <QAction>
+#include <QDebug>
+#include <Windows.h>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     createTrayIcon();
+
+    //Hide title bar
+    setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
 
     //Set translucent so background is painted behind
     setAttribute(Qt::WA_TranslucentBackground);
@@ -16,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     //Start as a 1x1 window so we can still count as visible
-    setFixedSize(1,1);
+    //setFixedSize(1,1);
 
     //Set focus so we can get key events
     setFocusPolicy(Qt::StrongFocus);
@@ -59,11 +64,30 @@ MainWindow::onTrayShow()
     showFullScreen();
 }
 
+/**
+ * @brief MainWindow::onRecieveKeyInput
+ * @param keyCode - ASCII code of key recieved
+ * @param pressedDown - true if key is pressed, false if key released
+ * Method called each time a key state change has happened, while all modifier
+ * keys are pressed down.
+ */
 void
-MainWindow::keyPressEvent(QKeyEvent *event)
+MainWindow::onRecieveKeyInput(int keyCode, bool pressedDown)
 {
-    if (event->key() == Qt::Key_Down) {
-        printf("SHOW");
+    qDebug() << "Recieved key event " << keyCode << "\n";
+    if (pressedDown && keyCode == 66)
+    {
+        //Show fullscreen
         showFullScreen();
+        //Bring window to top
+        // Windows does not allow windows to bring themselves to the front, so this hack solves this somewhat
+        ::SetWindowPos((HWND)effectiveWinId(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+        ::SetWindowPos((HWND)effectiveWinId(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+        // End of hack
+
+        //Do rest of methods to try bring window to the front
+        raise();
+        show();
+        activateWindow();
     }
 }

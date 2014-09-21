@@ -14,9 +14,9 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    inputcontroller.cpp
+    inputthread.cpp
 
 HEADERS  += mainwindow.h \
-    inputcontroller.h
+    inputthread.h
 
 FORMS    += mainwindow.ui

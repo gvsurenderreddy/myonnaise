@@ -19,9 +19,6 @@ public:
 
     void createTrayIcon();
 
-protected:
-    void keyPressEvent(QKeyEvent* event);
-
 private:
     Ui::MainWindow *ui;
 
@@ -30,6 +27,7 @@ private:
 public slots:
     void onTrayQuit();
     void onTrayShow();
+    void onRecieveKeyInput(int keyCode, bool pressedDown);
 
 };
 
