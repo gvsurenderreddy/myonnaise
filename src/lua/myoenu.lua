@@ -1,5 +1,8 @@
 scriptId = 'com.misahn.Test'
 
+lastTime = 0
+keyPressDuration = 80
+
 listenForSwipeDownIn = false
 listenForSwipeUpOut = false
 reset = false
@@ -14,14 +17,22 @@ minSwipeSpd = 0.07
 swipeDistance = 0.20
 currentPose = "none"
 
+keyMap = {}
+
+function pressKey(key)
+	myo.debug("Pressing key " .. key)
+	myo.keyboard(key, "down")
+	keyMap[key] = 0
+end
+
 function onSwipeDown()
 	myo.debug("SWIPE DOWN")
-	myo.keyboard("down_arrow", "press")
+	pressKey("down_arrow")
 end
 
 function onSwipeUp()
 	myo.debug("SWIPE UP")
-	myo.keyboard("up_arrow", "press")
+	pressKey("up_arrow")
 end
 
 function onSwipeRight()
@@ -36,7 +47,14 @@ end
 
 function onOpenMenu()
 	myo.debug("OPEN MENU")
-	myo.keyboard("right_shift", "press", "control", "alt", "shift")
+	pressKey("left_shift")
+	pressKey("f12")
+end
+
+function onCloseMenu()
+	myo.debug("CLOSE MENU")
+	pressKey("left_shift")
+	pressKey("f11")
 end
 
 function onPoseEdge(pose, edge)
@@ -55,6 +73,9 @@ function onPoseEdge(pose, edge)
 			myo.vibrate("short")
 			myo.debug("Swipe up/right started")
 			listenForSwipeUpOut = true
+		elseif pose == "fingersSpread" then
+			myo.vibrate("short")
+			onCloseMenu()
 		end
 	end
 end
@@ -160,6 +181,21 @@ function onPeriodic()
 			reset=false
 			listenForSwipeUpOut = false
 			listenForSwipeDownIn = false
+		end
+	end
+
+	-- Update key states
+	local curTime = myo.getTimeMilliseconds()
+	local deltaT = curTime - lastTime
+	lastTime = curTime
+
+	-- If any keys have been pressed for longer than a threshold, send an up event
+	for key, val in pairs(keyMap) do
+		keyMap[key] = keyMap[key] + deltaT
+		if keyMap[key] > keyPressDuration then
+			keyMap[key] = nil
+			myo.keyboard(key, "up")
+			myo.debug("Sent key up " .. key)
 		end
 	end
 end

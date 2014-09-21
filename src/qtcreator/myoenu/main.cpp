@@ -18,9 +18,9 @@ int main(int argc, char *argv[])
     InputThread keyThread;
 
 //    //Set key modifiers
-    keyThread.addModifierKey(HOTKEY_MOD1); //Win
-    keyThread.addModifierKey(HOTKEY_MOD2); //Alt
-    keyThread.addModifierKey(HOTKEY_MOD3); //Ctrl
+//    keyThread.addModifierKey(HOTKEY_MOD1); //Win
+//    keyThread.addModifierKey(HOTKEY_MOD2); //Alt
+//    keyThread.addModifierKey(HOTKEY_MOD3); //Ctrl
 
     //Associate fullscreen show with hotkey
 

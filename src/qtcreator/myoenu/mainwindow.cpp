@@ -17,8 +17,8 @@
  * 37: left arrow
  * 39: right arrow
  */
-#define HOTKEY_SHOWAPP 79
-#define HOTKEY_HIDEAPP 81
+#define HOTKEY_SHOWAPP 123
+#define HOTKEY_HIDEAPP 122
 #define HOTKEY_LEFT 37
 #define HOTKEY_RIGHT 39
 #define HOTKEY_UP 38
