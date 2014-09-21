@@ -27,6 +27,8 @@ public:
 
     void showOverlay();
 
+    void hideOverlay();
+
 private:
 
     QGraphicsTextItem* createTextAtPos(int x, int y, const QString &text);

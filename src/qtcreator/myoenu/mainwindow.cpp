@@ -13,10 +13,12 @@
 
 /*
  * 79: o
+ * 81: q
  * 37: left arrow
  * 39: right arrow
  */
 #define HOTKEY_SHOWAPP 79
+#define HOTKEY_HIDEAPP 81
 #define HOTKEY_LEFT 37
 #define HOTKEY_RIGHT 39
 #define HOTKEY_UP 38
@@ -100,6 +102,21 @@ MainWindow::showOverlay()
     doInitialLayout();
 }
 
+
+void
+MainWindow::hideOverlay()
+{
+    //Do fade out animation
+    QPropertyAnimation *animation = new QPropertyAnimation(this, "windowOpacity", this);
+    animation->setDuration(500);
+    animation->setStartValue(1.0f);
+    animation->setEndValue(0.0f);
+    //Delete the allocated animation once the animation completes
+    connect(animation, SIGNAL(finished()), animation, SLOT(hide()));
+    connect(animation, SIGNAL(finished()), animation, SLOT(deleteLater()));
+    animation->start();
+}
+
 void
 MainWindow::onTrayQuit()
 {
@@ -128,6 +145,10 @@ MainWindow::onRecieveKeyInput(int keyCode, bool pressedDown)
         if (keyCode == HOTKEY_SHOWAPP)
         {
             showOverlay();
+        }
+        else if (keyCode == HOTKEY_HIDEAPP)
+        {
+            hideOverlay();
         }
         else if (keyCode == HOTKEY_UP)
         {
