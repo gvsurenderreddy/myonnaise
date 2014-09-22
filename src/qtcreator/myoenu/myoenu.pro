@@ -15,6 +15,8 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     inputthread.cpp
+    
+QMAKE_CXXFLAGS += -std=c++11
 
 HEADERS  += mainwindow.h \
     inputthread.h
